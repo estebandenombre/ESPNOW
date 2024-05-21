@@ -1,0 +1,179 @@
+#include <esp_now.h>
+#include <WiFi.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+// Definir el pin del relé y el pulsador
+#define RELAY_PIN 2
+#define BUTTON_PIN 4
+
+// Definir el tamaño de la pantalla OLED
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET -1
+
+// Crear un objeto para la pantalla OLED
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+bool isConnected = false;
+unsigned long lastReceiveTime = 0;
+const unsigned long timeout = 5000; // 5 segundos de espera antes de considerar "Desconectado"
+
+// Definir estados del modo
+enum Mode { OA, OE };
+Mode currentMode = OA;
+
+// Variable para el estado del pulsador
+bool lastButtonState = HIGH; // Estado inicial sin presionar
+
+// Función para mostrar el modo actual en la pantalla OLED
+void displayMode() {
+  display.setCursor(0, 40);
+  display.print("Modo: ");
+  display.print(currentMode == OA ? "OA" : "OE");
+  display.display();
+}
+
+// Función callback cuando se reciben datos mediante ESP-NOW
+void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
+  int lightLevel;
+  memcpy(&lightLevel, data, sizeof(lightLevel));
+  Serial.print("Nivel de luz recibido: ");
+  Serial.println(lightLevel);
+
+  // Actualizar la bandera y el tiempo de la última recepción
+  isConnected = true;
+  lastReceiveTime = millis();
+
+  // Mostrar el nivel de luz en la pantalla OLED
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.print("Nivel de luz recibido: ");
+  display.setCursor(0, 10);
+   if (lightLevel == 4095){
+    display.print("Bajo");
+   }else{
+      display.print("Alto");
+   }
+
+  // Controlar el relé basado en el modo actual y el valor recibido
+  if (currentMode == OA) {
+    if (lightLevel == 4095) {
+      digitalWrite(RELAY_PIN, HIGH); // Apagar relé (el relé trabaja de forma inversa)
+      display.setCursor(0, 20);
+      display.print("Estado del termo");
+      display.setCursor(0, 30);
+      display.print("Apagado");
+    } else {
+      digitalWrite(RELAY_PIN, LOW); // Encender relé
+      display.setCursor(0, 20);
+      display.print("Estado del termo:");
+      display.setCursor(0, 30);
+      display.print("Encendido");
+    }
+  } else if (currentMode == OE) {
+    if (lightLevel == 4095) {
+      digitalWrite(RELAY_PIN, LOW); // Encender relé
+      display.setCursor(0, 20);
+      display.print("Estado del termo:");
+      display.setCursor(0, 30);
+      display.print("Encendido");
+    } else {
+      digitalWrite(RELAY_PIN, HIGH); // Apagar relé
+      display.setCursor(0, 20);
+      display.print("Estado del termo");
+      display.setCursor(0, 30);
+      display.print("Apagado");
+    }
+  }
+
+  // Mostrar el modo actual
+  displayMode();
+}
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(RELAY_PIN, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT_PULLUP); // Configurar el pulsador con resistencia interna de pull-up
+  digitalWrite(RELAY_PIN, LOW); // Asegurarse de que el relé esté apagado inicialmente
+
+  // Inicializar la pantalla OLED
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Dirección I2C 0x3C para la pantalla OLED
+    Serial.println(F("Fallo en la inicialización de SSD1306"));
+    for (;;);
+  }
+
+  // Mostrar mensaje de inicio
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.print("Inicializando...");
+  display.display();
+  delay(2000);
+
+  // Configurar Wi-Fi en modo AP
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP("Slave", "slave_password"); // Cambia estos valores según sea necesario
+  Serial.print("AP MAC: "); Serial.println(WiFi.softAPmacAddress());
+
+  // Inicializar ESP-NOW
+  if (esp_now_init() != ESP_OK) {
+    Serial.println("Error al inicializar ESP-NOW");
+    return;
+  }
+
+  // Registrar la función de callback para recibir datos
+  esp_now_register_recv_cb(OnDataRecv);
+
+  // Mostrar el modo inicial en la pantalla OLED
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.print("Inicializando...");
+  display.setCursor(0, 20);
+  display.print("Modo: ");
+  display.print(currentMode == OA ? "OA" : "OE");
+  display.display();
+}
+
+void loop() {
+  // Verificar si no se han recibido datos en el tiempo de espera
+  if (millis() - lastReceiveTime > timeout) {
+    if (isConnected) {
+      // Mostrar mensaje de "Desconectado" en la pantalla OLED
+      display.clearDisplay();
+      display.setTextSize(1);
+      display.setTextColor(SSD1306_WHITE);
+      display.setCursor(0, 0);
+      display.print("Desconectado");
+      display.display();
+
+      // Actualizar la bandera de conexión
+      isConnected = false;
+    }
+  }
+
+  // Leer el estado del pulsador y cambiar de modo si se presiona
+  bool buttonState = digitalRead(BUTTON_PIN);
+  if (buttonState == LOW && lastButtonState == HIGH) { // Detectar flanco descendente
+    currentMode = (currentMode == OA) ? OE : OA; // Alternar entre OA y OE
+    Serial.print("Modo cambiado a: ");
+    Serial.println(currentMode == OA ? "OA" : "OE");
+
+    // Actualizar la pantalla OLED con el nuevo modo
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(0, 0);
+    display.print("Modo cambiado a: ");
+    display.print(currentMode == OA ? "OA" : "OE");
+    display.display();
+    delay(200); // Debounce del pulsador
+  }
+  lastButtonState = buttonState;
+}
