@@ -17,7 +17,7 @@ Este proyecto consta de dos ESP32 que se comunican entre sí utilizando ESP-NOW.
 
 El modo se puede alternar presionando un pulsador conectado al segundo ESP32. El modo actual se muestra en una pantalla OLED.
 
-![Diagramas de los diferentes modos](diagrama en blaco.png)
+![](diagrama en blaco.png)
 
 ## Diagrama del Proyecto
 
