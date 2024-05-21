@@ -33,7 +33,7 @@ El modo se puede alternar presionando un pulsador conectado al segundo ESP32. El
 ### Diagrama de Conexión del Segundo ESP32 (Relé y Pantalla OLED)
 
 
-![](diagrama_conexion_segundo_ESP.png)
+![](diagrama_rele.svg)
 
 ## Requisitos de Hardware
 - 2 ESP32
