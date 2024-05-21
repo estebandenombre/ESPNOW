@@ -11,7 +11,7 @@ Este proyecto consta de dos ESP32 que se comunican entre sí utilizando ESP-NOW.
 
 **Nota:** El rango del sensor de luz va comprendido desde 0 hasta 4095 siendo el primero muestra de claridad y el último de oscuridad. Sin embargo, el rango no se tiene en cuenta debido a un conversor Analógico Digital del ESP32. 
 
-**Nota:** Se puede ajustar la sensibilidad del sesor o módulo LDR variando su potenciómetro. 
+**Nota:** Se puede ajustar la sensibilidad del sensor o módulo LDR variando su potenciómetro. 
 
 **Nota:** El relé funciona con lógica inversa.
 
