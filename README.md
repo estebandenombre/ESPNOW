@@ -6,8 +6,8 @@ Este proyecto consta de dos ESP32 que se comunican entre sí utilizando ESP-NOW.
 
 ### Modo de Operación
 
-- **Modo OA (Off-Active)**: Si el nivel de luz recibido es 4095, el relé se apaga (estado HIGH). De lo contrario, el relé se enciende (estado LOW).
-- **Modo OE (Off-Enable)**: Si el nivel de luz recibido es 4095, el relé se enciende (estado LOW). De lo contrario, el relé se apaga (estado HIGH).
+- **Modo OA (Oscuro-Apagado)**: Si el nivel de luz recibido es 4095, el relé se apaga (estado HIGH). De lo contrario, el relé se enciende (estado LOW).
+- **Modo OE (Oscuro-Encendio)**: Si el nivel de luz recibido es 4095, el relé se enciende (estado LOW). De lo contrario, el relé se apaga (estado HIGH).
 
 El modo se puede alternar presionando un pulsador conectado al segundo ESP32. El modo actual se muestra en una pantalla OLED.
 
