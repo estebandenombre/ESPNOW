@@ -4,6 +4,8 @@
 
 Este proyecto consta de dos ESP32 que se comunican entre sí utilizando ESP-NOW. El primer ESP32 está conectado a un sensor de luz (fotoresistor) y se encarga de medir la intensidad de la luz ambiente. Esta información se transmite al segundo ESP32, que está conectado a un relé. Dependiendo del modo de operación en el que se encuentre, el segundo ESP32 enciende o apaga el relé en función de los datos recibidos.
 
+![Diagrama solución problemática](diagrama_solucion.svg)
+
 ### Modo de Operación
 
 - **Modo OA (Oscuro-Apagado)**: Si el nivel de luz recibido es 4095, el relé se apaga (estado HIGH). De lo contrario, el relé se enciende (estado LOW).
