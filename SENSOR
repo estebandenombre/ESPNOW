@@ -1,0 +1,200 @@
+#include <esp_now.h>
+#include <WiFi.h>
+#include <esp_wifi.h> // only for esp_wifi_set_channel()
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+#define OLED_RESET    -1 // Reset pin # (or -1 if sharing Arduino reset pin)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+#define LIGHT_SENSOR_PIN 34 // Pin donde está conectado el sensor de luz
+esp_now_peer_info_t slave;
+#define CHANNEL 1
+#define PRINTSCANRESULTS 0
+#define DELETEBEFOREPAIR 0
+
+// Init ESP Now with fallback
+void InitESPNow() {
+  WiFi.disconnect();
+  if (esp_now_init() == ESP_OK) {
+    Serial.println("ESPNow Init Success");
+  } else {
+    Serial.println("ESPNow Init Failed");
+    ESP.restart();
+  }
+}
+
+// Scan for slaves in AP mode
+void ScanForSlave() {
+  int16_t scanResults = WiFi.scanNetworks(false, false, false, 300, CHANNEL);
+  bool slaveFound = 0;
+  memset(&slave, 0, sizeof(slave));
+
+  Serial.println("");
+  if (scanResults == 0) {
+    Serial.println("No WiFi devices in AP Mode found");
+  } else {
+    Serial.print("Found "); Serial.print(scanResults); Serial.println(" devices ");
+    for (int i = 0; i < scanResults; ++i) {
+      String SSID = WiFi.SSID(i);
+      int32_t RSSI = WiFi.RSSI(i);
+      String BSSIDstr = WiFi.BSSIDstr(i);
+
+      if (PRINTSCANRESULTS) {
+        Serial.print(i + 1);
+        Serial.print(": ");
+        Serial.print(SSID);
+        Serial.print(" (");
+        Serial.print(RSSI);
+        Serial.println("");
+      }
+      delay(10);
+      if (SSID.indexOf("Slave") == 0) {
+        Serial.println("Found a Slave.");
+        Serial.print(i + 1); Serial.print(": "); Serial.print(SSID); Serial.print(" ["); Serial.print(BSSIDstr); Serial.print("]"); Serial.print(" ("); Serial.print(RSSI); Serial.println("");
+        int mac[6];
+        if ( 6 == sscanf(BSSIDstr.c_str(), "%x:%x:%x:%x:%x:%x",  &mac[0], &mac[1], &mac[2], &mac[3], &mac[4], &mac[5] ) ) {
+          for (int ii = 0; ii < 6; ++ii ) {
+            slave.peer_addr[ii] = (uint8_t) mac[ii];
+          }
+        }
+
+        slave.channel = CHANNEL;
+        slave.encrypt = 0;
+
+        slaveFound = 1;
+        break;
+      }
+    }
+  }
+
+  if (slaveFound) {
+    Serial.println("Slave Found, processing..");
+  } else {
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(0, 0);
+    display.println("Desconectado");
+    display.display();
+    Serial.println("Slave Not Found, trying again.");
+  }
+
+  WiFi.scanDelete();
+}
+
+bool manageSlave() {
+  if (slave.channel == CHANNEL) {
+    if (DELETEBEFOREPAIR) {
+      deletePeer();
+    }
+
+    Serial.print("Slave Status: ");
+    bool exists = esp_now_is_peer_exist(slave.peer_addr);
+    if (exists) {
+      Serial.println("Already Paired");
+      return true;
+    } else {
+      esp_err_t addStatus = esp_now_add_peer(&slave);
+      if (addStatus == ESP_OK) {
+        Serial.println("Pair success");
+        return true;
+      } else {
+        Serial.println("Pair failed");
+        return false;
+      }
+    }
+  } else {
+    Serial.println("No Slave found to process");
+    return false;
+  }
+}
+
+void deletePeer() {
+  esp_err_t delStatus = esp_now_del_peer(slave.peer_addr);
+  Serial.print("Slave Delete Status: ");
+  if (delStatus == ESP_OK) {
+    Serial.println("Success");
+  } else {
+    Serial.println("Failed");
+  }
+}
+
+void sendData() {
+  int lightLevel = analogRead(LIGHT_SENSOR_PIN); // Leer el nivel de luz
+  const uint8_t *peer_addr = slave.peer_addr;
+  Serial.print("Enviando nivel de luz: "); Serial.println(lightLevel);
+  esp_err_t result = esp_now_send(peer_addr, (uint8_t*)&lightLevel, sizeof(lightLevel));
+  Serial.print("Send Status: ");
+  if (result == ESP_OK) {
+    Serial.println("Success");
+  } else {
+    Serial.println("Failed");
+  }
+
+  // Display the light level on the OLED
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  if(lightLevel == 4095){
+    display.setCursor(0, 0);
+    display.print("Nivel de luz: Bajo");
+    display.display();
+  }else{
+    display.setCursor(0, 0);
+    display.print("Nivel de luz: Alto ");
+    display.display();
+
+  }
+  
+}
+
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+  char macStr[18];
+  snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
+           mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+  Serial.print("Last Packet Sent to: "); Serial.println(macStr);
+  Serial.print("Last Packet Send Status: "); Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+}
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(LIGHT_SENSOR_PIN, INPUT);
+
+  // Initialize OLED display
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;);
+  }
+  display.display();
+  delay(2000); // Pause for 2 seconds
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.println("Initializing...");
+  display.display();
+
+  WiFi.mode(WIFI_STA);
+  esp_wifi_set_channel(CHANNEL, WIFI_SECOND_CHAN_NONE);
+  Serial.println("ESPNow/Basic/Master Example");
+  Serial.print("STA MAC: "); Serial.println(WiFi.macAddress());
+  Serial.print("STA CHANNEL "); Serial.println(WiFi.channel());
+  InitESPNow();
+  esp_now_register_send_cb(OnDataSent);
+}
+
+void loop() {
+  ScanForSlave();
+  if (slave.channel == CHANNEL) {
+    bool isPaired = manageSlave();
+    if (isPaired) {
+      sendData();
+    } else {
+      Serial.println("Slave pair failed!");
+    }
+  }
+  delay(3000);
+}
