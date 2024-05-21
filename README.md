@@ -27,7 +27,7 @@ El modo se puede alternar presionando un pulsador conectado al segundo ESP32. El
 
 ### Diagrama de Conexión del Primer ESP32 (Sensor de Luz)
 
-![](diagrama_conexion_primer_ESP.png)
+![](diagrama_conexion_senso.svg)
 
 
 ### Diagrama de Conexión del Segundo ESP32 (Relé y Pantalla OLED)
