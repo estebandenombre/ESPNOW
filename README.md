@@ -9,6 +9,8 @@ Este proyecto consta de dos ESP32 que se comunican entre sí utilizando ESP-NOW.
 - **Modo OA (Oscuro-Apagado)**: Si el nivel de luz recibido es 4095, el relé se apaga (estado HIGH). De lo contrario, el relé se enciende (estado LOW).
 - **Modo OE (Oscuro-Encendio)**: Si el nivel de luz recibido es 4095, el relé se enciende (estado LOW). De lo contrario, el relé se apaga (estado HIGH).
 
+![Diagrama sobre los diferentes modos](diagrama_modos.png)
+
 **Nota:** El rango del sensor de luz es de 0 hasta 4095, siendo el primero muestra de claridad y el último de oscuridad. Sin embargo, el rango no se tiene en cuenta debido al conversor Analógico Digital del ESP32. 
 
 **Nota:** Se puede ajustar la sensibilidad del sensor o módulo LDR variando su potenciómetro. 
@@ -17,7 +19,7 @@ Este proyecto consta de dos ESP32 que se comunican entre sí utilizando ESP-NOW.
 
 El modo se puede alternar presionando un pulsador conectado al segundo ESP32. El modo actual se muestra en una pantalla OLED.
 
-![Diagrama sobre los diferentes modos](diagrama_modos.png)
+
 
 ## Diagrama del Proyecto
 
