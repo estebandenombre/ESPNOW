@@ -29,7 +29,7 @@ El modo se puede alternar presionando un pulsador conectado al segundo ESP32. El
 - 2 ESP32
 - 1 Sensor de luz (fotoresistor)
 - 1 Relé
-- 1 Pantalla OLED (SSD1306)
+- 2 Pantalla OLED (SSD1306)
 - 1 Pulsador
 - Cables de conexión
 - Protoboard (opcional)
