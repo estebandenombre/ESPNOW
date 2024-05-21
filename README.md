@@ -41,7 +41,7 @@ El modo se puede alternar presionando un pulsador conectado al segundo ESP32. El
 2. **Clonar el Repositorio**:
 
     ```sh
-    git clone https://github.com/tu_usuario/tu_repositorio.git
+    git clone https://github.com/estebandenombre/ESPNOW.git
     cd tu_repositorio
     ```
 
