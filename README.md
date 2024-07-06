@@ -8,8 +8,8 @@ This project consists of two ESP32s that communicate with each other using ESP-N
 
 ### Operating Mode
 
-- **OA Mode (Dark-Off)**: If the received light level is 4095, the relay turns off (HIGH state). Otherwise, the relay turns on (LOW state).
-- **OE Mode (Dark-On)**: If the received light level is 4095, the relay turns on (LOW state). Otherwise, the relay turns off (HIGH state).
+- **DOFF Mode (Dark-Off)**: If the received light level is 4095, the relay turns off (HIGH state). Otherwise, the relay turns on (LOW state).
+- **DON Mode (Dark-On)**: If the received light level is 4095, the relay turns on (LOW state). Otherwise, the relay turns off (HIGH state).
 
 ![Modes Diagram](diagrama_modos.svg)
 
