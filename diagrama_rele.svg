@@ -30,7 +30,7 @@
    <use id="svg_32" transform="matrix(1 0 0 1 785.963 958.167)" x="-539" xlink:href="#j" y="-299"/>
    <path d="m241,607a6,6 0 0 1 6,-6l28,0a6,6 0 0 1 6,6l0,18a6,6 0 0 1 -6,6l-28,0a6,6 0 0 1 -6,-6l0,-18z" fill="#fff" fill-opacity="0" id="svg_33" stroke="#000" stroke-opacity="0" stroke-width="2"/>
    <use id="svg_34" transform="matrix(1 0 0 1 785.222 918.167)" x="-539" xlink:href="#e" y="-299"/>
-   <path d="m241.32,227a6,6 0 0 1 6,-6l148,0a6,6 0 0 1 6,6l0,188a6,6 0 0 1 -6,6l-148,0a6,6 0 0 1 -6,-6l0,-188z" fill="#fff" id="svg_35" stroke="#282c33" stroke-width="2" transform="matrix(1 0 0 1 0 0)"/>
+   <path d="m241.32,227a6,6 0 0 1 6,-6l148,0a6,6 0 0 1 6,6l0,188a6,6 0 0 1 -6,6l-148,0a6,6 0 0 1 -6,-6l0,-188z" fill="#fff" id="svg_35" stroke="#282c33" stroke-width="2"/>
    <path d="m241.64,227a6,6 0 0 1 6,-6l147.68,0a6,6 0 0 1 6,6l0,51.33a6,6 0 0 1 -6,6l-147.68,0a6,6 0 0 1 -6,-6l0,-51.33z" fill="#fff" fill-opacity="0" id="svg_36" stroke="#000" stroke-opacity="0" stroke-width="2"/>
    <path d="m241.64,305a6,6 0 0 1 6,-6l47.04,0a6,6 0 0 1 6,6l0,30a6,6 0 0 1 -6,6l-47.04,0a6,6 0 0 1 -6,-6l0,-30z" fill="#fff" fill-opacity="0" id="svg_38" stroke="#000" stroke-opacity="0" stroke-width="2"/>
    <use id="svg_39" transform="matrix(1 0 0 1 793.995 621.667)" x="-539" xlink:href="#n" y="-299"/>
@@ -168,9 +168,9 @@
    </defs>
    <text fill="#000000" font-family="Helvetica" font-size="21" id="svg_114" stroke="#282c33" stroke-width="0" text-anchor="middle" x="321.49" xml:space="preserve" y="33">OLED DISPLAY</text>
    <text fill="#000000" fill-opacity="0" font-family="Helvetica" font-size="21" id="svg_116" stroke="#000" stroke-opacity="0" stroke-width="0" text-anchor="middle" transform="matrix(1 0 0 1 0 0)" x="273.49" xml:space="preserve" y="244"/>
-   <text fill="#000000" font-family="Helvetica" font-size="21" id="svg_117" stroke="#000" stroke-opacity="0" stroke-width="0" text-anchor="middle" transform="matrix(1 0 0 1 0 0)" x="324.49" xml:space="preserve" y="253">BOTON</text>
-   <text fill="#000000" font-family="Helvetica" font-size="21" id="svg_118" stroke="#000" stroke-opacity="0" stroke-width="0" style="cursor: move;" text-anchor="middle" transform="matrix(1 0 0 1 0 0)" x="318.68" xml:space="preserve" y="517">RELAY</text>
-   <text fill="#000000" font-family="Helvetica" font-size="14" id="svg_120" stroke="#000" stroke-opacity="0" stroke-width="0" style="cursor: move;" text-anchor="middle" x="276.49" xml:space="preserve" y="567">SIGNAL</text>
+   <text fill="#000000" font-family="Helvetica" font-size="21" id="svg_118" stroke="#000" stroke-opacity="0" stroke-width="0" text-anchor="middle" transform="matrix(1 0 0 1 0 0)" x="318.68" xml:space="preserve" y="517">RELAY</text>
+   <text fill="#000000" font-family="Helvetica" font-size="14" id="svg_120" stroke="#000" stroke-opacity="0" stroke-width="0" text-anchor="middle" x="276.49" xml:space="preserve" y="567">SIGNAL</text>
+   <text fill="#000000" font-family="Helvetica" font-size="21" id="svg_14" stroke="#000000" stroke-width="0" text-anchor="middle" transform="matrix(1 0 0 1 0 0)" x="321.49" xml:space="preserve" y="251">BUTTON</text>
   </g>
  </g>
 </svg>
