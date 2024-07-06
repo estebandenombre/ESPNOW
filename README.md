@@ -1,5 +1,5 @@
 # Light Sensor and Relay Control with ESP-NOW on ESP32
-
+![Project Cover](images/A_cover_page_for_a_project_titled_'Light_Sensor_an.webp)
 ## Project Description
 
 This project consists of two ESP32s that communicate with each other using ESP-NOW. The first ESP32 is connected to a light sensor (photoresistor) and measures the ambient light intensity. This information is transmitted to the second ESP32, which is connected to a relay. Depending on the operating mode, the second ESP32 turns the relay on or off based on the received data.
