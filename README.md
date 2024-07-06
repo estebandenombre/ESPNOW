@@ -1,5 +1,6 @@
 # Light Sensor and Relay Control with ESP-NOW on ESP32
 ![Project Cover](A_cover_page_for_a_project_titled__Light_Sensor_an.png)
+The purpose of this project is to control the operation of a solar-powered water heater based on the ambient light conditions. Specifically, the system will turn the water heater on or off depending on whether the sky is clear or dark, thus optimizing energy usage.
 ## Project Description
 
 This project consists of two ESP32s that communicate with each other using ESP-NOW. The first ESP32 is connected to a light sensor (photoresistor) and measures the ambient light intensity. This information is transmitted to the second ESP32, which is connected to a relay. Depending on the operating mode, the second ESP32 turns the relay on or off based on the received data.
