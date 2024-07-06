@@ -1,102 +1,98 @@
-# Control de Sensor de Luz y Relé con ESP-NOW en ESP32
+# Light Sensor and Relay Control with ESP-NOW on ESP32
 
-## Descripción del Proyecto
+## Project Description
 
-Este proyecto consta de dos ESP32 que se comunican entre sí utilizando ESP-NOW. El primer ESP32 está conectado a un sensor de luz (fotoresistor) y se encarga de medir la intensidad de la luz ambiente. Esta información se transmite al segundo ESP32, que está conectado a un relé. Dependiendo del modo de operación en el que se encuentre, el segundo ESP32 enciende o apaga el relé en función de los datos recibidos.
+This project consists of two ESP32s that communicate with each other using ESP-NOW. The first ESP32 is connected to a light sensor (photoresistor) and measures the ambient light intensity. This information is transmitted to the second ESP32, which is connected to a relay. Depending on the operating mode, the second ESP32 turns the relay on or off based on the received data.
 
-![Diagrama solución problemática](diagrama_solucion.svg)
+![Problem Solution Diagram](diagrama_solucion.svg)
 
-### Modo de Operación
+### Operating Mode
 
-- **Modo OA (Oscuro-Apagado)**: Si el nivel de luz recibido es 4095, el relé se apaga (estado HIGH). De lo contrario, el relé se enciende (estado LOW).
-- **Modo OE (Oscuro-Encendio)**: Si el nivel de luz recibido es 4095, el relé se enciende (estado LOW). De lo contrario, el relé se apaga (estado HIGH).
+- **OA Mode (Dark-Off)**: If the received light level is 4095, the relay turns off (HIGH state). Otherwise, the relay turns on (LOW state).
+- **OE Mode (Dark-On)**: If the received light level is 4095, the relay turns on (LOW state). Otherwise, the relay turns off (HIGH state).
 
-![Diagrama sobre los diferentes modos](diagrama_modos.svg)
+![Modes Diagram](diagrama_modos.svg)
 
-**Nota:** El rango del sensor de luz es de 0 hasta 4095, siendo el primero muestra de claridad y el último de oscuridad. Sin embargo, el rango no se tiene en cuenta debido al conversor Analógico Digital del ESP32. 
+**Note:** The light sensor range is from 0 to 4095, with the former indicating brightness and the latter indicating darkness. However, the range is not considered due to the ESP32's Analog to Digital Converter. 
 
-**Nota:** Se puede ajustar la sensibilidad del sensor o módulo LDR variando su potenciómetro. 
+**Note:** The sensitivity of the LDR sensor or module can be adjusted by varying its potentiometer. 
 
-**Nota:** El relé funciona con lógica inversa.
+**Note:** The relay operates with inverse logic.
 
-El modo se puede alternar presionando un pulsador conectado al segundo ESP32. El modo actual se muestra en una pantalla OLED.
+The mode can be toggled by pressing a button connected to the second ESP32. The current mode is displayed on an OLED screen.
 
+## Project Diagram
 
-
-## Diagrama del Proyecto
-
-### Diagrama de Conexión del Primer ESP32 (Sensor de Luz)
+### Connection Diagram of the First ESP32 (Light Sensor)
 
 ![](diagrama_conexion_senso.svg)
 
-
-### Diagrama de Conexión del Segundo ESP32 (Relé y Pantalla OLED)
-
+### Connection Diagram of the Second ESP32 (Relay and OLED Display)
 
 ![](diagrama_rele.svg)
 
-## Requisitos de Hardware
+## Hardware Requirements
 - 2 ESP32
-- 1 Sensor de luz (fotoresistor)
-- 1 Relé
-- 2 Pantalla OLED (SSD1306)
-- 1 Pulsador
-- Cables de conexión
-- Protoboard (opcional)
+- 1 Light sensor (photoresistor)
+- 1 Relay
+- 2 OLED displays (SSD1306)
+- 1 Button
+- Connecting wires
+- Breadboard (optional)
 
-# Instalación y Configuración
+# Installation and Setup
 
-1. **Conectar el Hardware**: Sigue los diagramas de conexión proporcionados para conectar el sensor de luz, el relé, la pantalla OLED y el pulsador a los ESP32.
+1. **Connect the Hardware**: Follow the provided connection diagrams to connect the light sensor, relay, OLED display, and button to the ESP32s.
    
-2. **Clonar el Repositorio**:
+2. **Clone the Repository**:
 
     ```sh
     git clone https://github.com/estebandenombre/ESPNOW.git
-    cd tu_repositorio
+    cd your_repository
     ```
 
-3. **Cargar el Código al Primer ESP32 (Sensor de Luz)**:
-   - Abre `SENSOR.ino` en el Arduino IDE.
-   - Configura las opciones del ESP32 en `Herramientas`.
-   - Carga el código al primer ESP32.
+3. **Upload the Code to the First ESP32 (Light Sensor)**:
+   - Open `SENSOR.ino` in the Arduino IDE.
+   - Configure the ESP32 options in `Tools`.
+   - Upload the code to the first ESP32.
 
-4. **Cargar el Código al Segundo ESP32 (Relé y Pantalla OLED)**:
-   - Abre `RELE.ino` en el Arduino IDE.
-   - Configura las opciones del ESP32 en `Herramientas`.
-   - Carga el código al segundo ESP32.
+4. **Upload the Code to the Second ESP32 (Relay and OLED Display)**:
+   - Open `RELE.ino` in the Arduino IDE.
+   - Configure the ESP32 options in `Tools`.
+   - Upload the code to the second ESP32.
 
-5. **Verificar la Comunicación**:
-   - Asegúrate de que ambos ESP32 estén alimentados.
-   - Observa los datos recibidos en el segundo ESP32 a través del monitor serial y la pantalla OLED.
-   - Alterna el modo de operación presionando el pulsador y verifica el comportamiento del relé.
+5. **Verify Communication**:
+   - Ensure both ESP32s are powered.
+   - Observe the data received on the second ESP32 through the serial monitor and the OLED display.
+   - Toggle the operating mode by pressing the button and verify the relay behavior.
 
-# Uso del Proyecto
+# Project Usage
 
-1. **Inicialización**:
-   - Conecta y enciende ambos ESP32.
-   - El segundo ESP32 mostrará el mensaje de inicialización y el modo actual en la pantalla OLED.
+1. **Initialization**:
+   - Connect and power both ESP32s.
+   - The second ESP32 will display an initialization message and the current mode on the OLED screen.
 
-2. **Medición de Luz**:
-   - El primer ESP32 mide continuamente el nivel de luz ambiente y transmite los datos al segundo ESP32 mediante ESP-NOW.
+2. **Light Measurement**:
+   - The first ESP32 continuously measures the ambient light level and transmits the data to the second ESP32 via ESP-NOW.
 
-3. **Control del Relé**:
-   - El segundo ESP32 recibe los datos de luz y controla el relé según el modo de operación.
-   - Si el nivel de luz es 4095 (oscuro), el relé se enciende o apaga dependiendo del modo.
+3. **Relay Control**:
+   - The second ESP32 receives the light data and controls the relay according to the operating mode.
+   - If the light level is 4095 (dark), the relay turns on or off depending on the mode.
 
-4. **Cambio de Modo**:
-   - Presiona el pulsador conectado al segundo ESP32 para alternar entre los modos OA (recibiendo luz Oscura y Apagando rele) y OE (recibiendo luz Oscura y Encendiendo rele).
-   - El modo actual se mostrará en la pantalla OLED.
+4. **Mode Change**:
+   - Press the button connected to the second ESP32 to toggle between OA mode (Dark-Off) and OE mode (Dark-On).
+   - The current mode will be displayed on the OLED screen.
 
-# Contribuciones
+# Contributions
 
-Las contribuciones son bienvenidas. Por favor, envía un pull request con mejoras o correcciones.
+Contributions are welcome. Please send a pull request with improvements or corrections.
 
-# Licencia
+# License
 
-Este proyecto está bajo la licencia de Esteban Ortiz Vicente. 
+This project is licensed under Esteban Ortiz Vicente.
 
-# Agradecimientos
+# Acknowledgements
 
-Agradecimientos a mi cuñado que quería que su termo se encendiese o apagase en función de si sus placas solares estaban iluminadas o por el contrario, oscurecidas  por ser de noche o por estar nublado. 
+Thanks to my brother-in-law who wanted his thermos to turn on or off depending on whether his solar panels were illuminated or darkened by night or cloudy weather.
 
-
+---
